@@ -1,0 +1,443 @@
+/*
+	this is some user css you can add to stylebot or whatever your user-css-allowing extension is,
+	or your mastodon instance itself if you want
+
+	sample image of most changes:
+	general ui:      https://icosahedron.website/@Xkeeper/100765176052010274
+	media uploader:  https://icosahedron.website/@Xkeeper/100765236260841467
+	pinned posts:    https://icosahedron.website/@Xkeeper/100787770095983939
+
+	--------------------------------------------------------------------------------------
+
+	features:
+
+	- attempts to disable most animations, well beyond the ui's "less animations" setting
+		- MAY cause issues, as some parts of the ui require this to work (/why/)
+
+	- turns tombstones into a tired and ancient meme
+		- tombstones are the "Filtered" boxes where filtered posts go
+		- uncomment the part that says "display: none" to just hide them instead
+		- (may also make them a little smaller; UI will act weird if a timeline is mostly filtered)
+
+	- removes forced-capitalization everywhere
+		- "TOOT" now "Toot", "SHOW MORE/HIDE MORE" just "Show more/Hide more"
+		- Please get off the internet, grandpa
+
+	- makes the cw input box always visible, adds heading saying "subject / content warning"
+		- removes placeholder text (can't change it via css, rip)
+		- functionality works even without the button; adding text = cw enabled, leaving blank = off
+
+	- makes the under-composer buttons better
+		- "single icon, flat" -> "button-like, full width, has text explaining it"
+		- distinctive visual effects for hovering, focusing, and toggling them
+		- removed "cw" button since no longer useful (see first change)
+		- "direct message" privacy mode has blue text to indicate it is fundamentally different
+		- default privacy level has slightly gray text to indicate it's the default
+			- makes changes in privacy level a bit more obvious
+			- this part *requires* you to change the css below to whatever you use as the default
+			- the font for the button is hardcoded, because :gargron: made that button work different
+			- worst and clunkiest part of this entire ui i s2g
+
+	- makes the media uploader interface better
+		- controls always visible
+		- controls now turn white when active/focused so you can see where your cursor is
+		- image desc. field always visible, has padding / border to be very obvious
+		- image desc. field has red placeholder if the description is left blank
+
+	- avatars in timelines now have a dark background
+		- makes it a little more obvious if someone's using a fully transparent png or whatever
+
+	- pinned posts/toots in user profiles in the ui are more distinctive
+		- pinned posts have darker background
+		- pinned posts have a border on the bottom and top
+		- "Pinned Toot" header stands out visually, has bold text
+
+	- collapses favorite/boost notifications in the notification column for easier viewing
+		- great if you get a lot, and want to focus on replies w/o turning them off totally
+		- may be annoying
+
+	---------------------------------------------------------------
+
+	with love, xkeeper / @xkeepah / @xkeeper@icosahedron.website 
+	feedback, comments, and whatever else welcome
+*/
+
+
+
+/*	Disable most animations, well beyond the "less animations" setting
+
+	Unfortunately things like "transform" have to be allowed because
+	things like the image switcher require it :(
+
+	Also, disable Mastodon's tendency to make certain things ALL UPPERCASE
+*/
+* {
+	animation: none;
+	transition-property: none;
+	text-transform: none ;
+}
+
+
+/*	Give all avatars a dark background, so clever people who 
+	upload a blank PNG don't look like they have a missing avatar
+*/
+.account__avatar {
+	background-color: rgba(0, 0, 0, .5);
+}
+
+
+/*	Fully remove the "Filtered" tombstone.
+	These are literally useless things that say "Filtered" in place of
+	filtered posts.
+	Alternatively, you can comment this out and enjoy the joke version below.
+*/
+.status__wrapper--filtered {
+	display: none;
+}
+
+
+/*	Joke variant:
+	This makes the tombstones say 'peperony and chease',
+	which is an ancient internet joke	
+*/
+.status__wrapper--filtered span {
+	display: block;
+	margin-top: -1.5em;
+	text-indent: -9999px;
+}
+
+.status__wrapper--filtered span::after {
+	content: 'peperony and chease';
+	display: block;
+	text-indent: 0px;
+}
+
+
+/* ************************************************************************* */
+/* ************************************************************************* */
+/* ************************************************************************* */
+
+
+/*	Compose form fixes
+	Make the buttons look like actual buttons, with some 3D effects
+	
+	This turns them from this:
+	[📷] [🔒] [👁] [⚠]
+
+	Into this:
+	[📷 Attach images or media   ]
+	[🔒 Private - Followers only ]
+	[👁 Hide media behind warning]
+
+	It also disables the [CW] button and replaces it with
+	an always-visible field at the top of the compose form
+	labeled "Subject / Content Warning:"
+*/
+.compose-form__buttons {
+	display: block;
+}
+
+/*	Add actual depth to the buttons using inset shadows */
+.compose-form__buttons button {
+	width: 100%;
+	text-align: left;
+	padding: 0 .2em 0 .5em;
+	background: #ccc;
+	color: black;
+	font-size: 100%;
+	margin-bottom: 0.3em;
+	border-radius: 5px;
+	border: 1px solid rgba(0,0,0,.3);
+	box-shadow: -5px -5px 20px -12px inset black, 5px 5px 20px -5px inset white;
+}
+
+/*	Give buttons a bit of padding since they're not just icons now */
+.compose-form__buttons button:after {
+	padding: 0 0 0 .5em;
+}
+
+/*	Make toggle buttons like [Hide media behind warning] actually look toggled */
+.compose-form__buttons button.active {
+	background: #888;
+	box-shadow: -5px -5px 15px -7px inset white, 5px 5px 15px -5px inset black;
+}
+
+/*	Make buttons that are focused or hovered over stand out more for visual feedback */
+.compose-form__buttons button:focus, .compose-form__buttons button:hover {
+	background: #aaa;
+	box-shadow: -5px -5px 15px -7px inset black, 5px 5px 15px 0px inset white;
+}
+
+/*	Give toggled buttons the same, but slightly different to distinguish them */
+.compose-form__buttons button.active:focus, .compose-form__buttons button.active:hover {
+	background: #999;
+	box-shadow: -5px -5px 15px -9px inset white, 5px 5px 15px -7px inset black;
+}
+
+/*	Give the [📷 Attach images or media] button its text */
+.compose-form__upload-button-icon:after {
+	content: 'Attach images or media';
+}
+
+/*	Give the [👁 Hide media behind warning] button its text
+	Note that if a subject/CW is entered, this button will
+	have no effect -- media is always hidden in that case
+*/
+.compose-form__sensitive-button__icon:after {
+	content: 'Hide media behind warning';
+}
+
+
+/*	The post privacy button is its own mess, because the state of the button
+	is only examinable via the icon *in* the button...
+	So we have to do some styling to the underlying button,
+	then add the text after the icon element.
+	This is kind of gross in a lot of ways, but it's all I can do :(
+*/
+.privacy-dropdown__value-icon, .privacy-dropdown__value-icon button {
+	width: 100% ;
+}
+
+/*	Make the icon look mostly OK since we just messed the button up */
+.privacy-dropdown__value-icon i {
+	width: 100%;
+	text-align: left;
+	padding-left: 0.2em;
+}
+
+/*	Because the button's font is forced to FontAwesome for the icons,
+	we have to set the font here. Unfortunately, there's no way to get
+	the default font for the rest of the page - inherit will just
+	give us FontAwesome again, ugh.
+	We have to also fix the font size and positioning since we're
+	hijacking the <i> element.
+
+	Replace Comic Sans MS with whatever your system font is.
+*/
+.privacy-dropdown__value-icon i:after {
+	font-family: Comic Sans MS;	/* replace me */
+	padding: 0 0 0 0.85em;
+	width: 100%;
+}
+
+/*	[🌎 Public] - Visible to all, posted on local/fedi timelines */
+.privacy-dropdown__value-icon i.fa-globe:after {
+	content: 'Public';
+}
+
+/*	[🔓 Unlisted] - Visible, but not posted to local/federated timelines */
+.privacy-dropdown__value-icon i.fa-unlock-alt:after {
+	content: 'Unlisted';
+}
+
+/*	[🔒 Private - Followers only] (visible only to followers) */
+.privacy-dropdown__value-icon i.fa-lock:after {
+	content: 'Private - Followers only';
+}
+
+/*	[✉ Direct Message] - only visible to those mentioned in the message
+	Slightly blue to highlight that this is a VERY different post mode
+*/
+.privacy-dropdown__value-icon i.fa-envelope:after {
+	content: 'Direct Message';
+	color: #22a;
+}
+
+/*	Make your default privacy level have slightly faded text
+	This can help differentiate when your visibility level
+	has been changed due to replying or otherwise having set it
+
+	You will have to change the "fa-??????????" to one of the
+	icons in the above status levels to use this
+	
+	(and also uncomment it, of course)
+*/
+/*
+.privacy-dropdown__value-icon i.fa-??????????:after {
+	opacity: 0.5;
+}
+/**/
+
+
+
+/*	Make the Subject / Content Warning field always visible */
+.spoiler-input {
+	display: block;
+	opacity: 1;
+	height: auto;
+	margin-bottom: 1em;
+}
+
+/*	Add the "Subject / Content Warning:" label
+	(This would be much better in HTML, but, well, here we are)
+*/
+.spoiler-input:before {
+	display: block;
+	margin-bottom: 0.3em;
+	content: 'Subject / Content Warning:';
+}
+
+/*	Hide the "Write your warning here" placeholder
+	I wanted to make this instead say something like
+	"food / pol / health", etc.
+	but you can't change the content, just the style...
+	Another thing you have to do in HTML
+*/
+.spoiler-input input::placeholder {
+	opacity: 0;
+}
+
+/*	Remove the [CW] button.
+	Filling in the S/CW field will automatically mark
+	a post as being CW'd, and removing it will
+	do the exact opposite. Easy!
+*/
+button[aria-controls="cw-spoiler-input"] {
+	display: none;
+}
+
+
+/*	Always show media options and tools
+	Instead of only showing them on hover, make them always visible,
+	and change the background to a more contrasting solid transparent black
+*/
+.compose-form__upload__actions, .compose-form__upload-description {
+	opacity: 1;
+	background: rgba(0,0,0,.6);
+}
+
+/*	Give the text within the media tools an outline to help with contrast */
+.compose-form__upload__actions *, .compose-form__upload-description * {
+	opacity: 1;
+	text-shadow: -1px -1px 0 #000,
+		1px -1px 0 #000,
+		-1px 1px 0 #000,
+		1px 1px 0 #000;
+}
+
+/*	Make the options visibly active when hovered or focused,
+	so you can tell where your cursor is and what's highlighted
+	This makes the background a little brighter and makes the text white,
+	assuming that the default instance uses a different color setting
+	(You may have to change this for your own)
+*/
+.compose-form__upload__actions *:focus, .compose-form__upload__actions *:hover, .compose-form__upload-description *:active, .compose-form__upload-description *:focus,.compose-form__upload-description input:hover, .compose-form__upload-description input:focus {
+	opacity: 1;
+	text-shadow: -1px -1px 0 #000,
+		1px -1px 0 #000,
+		-1px 1px 0 #000,
+		1px 1px 0 #000;
+	background: rgba(255, 255, 255, .3);
+	color: white;
+}
+
+/*	Give image descriptions a little breathing room, and make them more visible.
+	Vanilla Mastodon explicitly only has the exact room for text usable, so this
+	adds some padding, a border, and makes it also visible all the time.
+
+	It's a little ironic that a field for visually impared folks is, itself,
+	hard to see, is it not?
+*/
+.compose-form__upload-description input {
+	background: black;
+	margin: -0.2em;
+	border: 1px solid #888;
+	padding: 0.2em;
+}
+
+/*	Make the "Describe for the visually impaired" placeholder a scary white-on-red.
+	This makes it visible and stands out as "hey, you should do this".
+	I would love to change the placeholder as well, but like the Subj/CW field...
+
+	"Describe this image"
+	Captions are helpful to people who can see, too.
+*/
+.compose-form__upload-description input::placeholder {
+	color: white;
+	background: rgba(255, 0, 0, .5);
+}
+
+
+/*	Make pinned posts in profiles show up in a fancier way.
+	This darkens them and adds a thicker border around pinned posts.
+	That way you can either pay special attention, or ignore them easier.
+*/
+.status__wrapper[data-featured=true] .status__prepend {
+	/* bug: the pin icon is shoved off to the left and invisible. don't care, WONT_FIX */
+	margin-left: 0;
+	text-align: center;
+	font-weight: bold;
+	background: rgba(0, 0, 0, .25);
+	border-top: 3px solid #555;
+}
+
+/*	Add the border to the actual status	as well */
+.status__wrapper[data-featured=true] .status__prepend + .status {
+	background: rgba(0, 0, 0, .5);
+	border-bottom: 3px solid #888;
+}
+
+
+/*	Collapse fav / boost notifications in the notif column.
+	This section also makes the first one expanded, as well
+	as any that you hover over later (while you're hovering)
+
+	It hides the show/hide more button and the interactions,
+	since you can just expand the status to see those
+	(and having interactions on your own post isn't too useful)
+
+	Favorites are dark yellow/gold-ish (it's hard); reblogs, green
+*/
+.notification-favourite, .notification-reblog {
+	max-height: 2.1em;
+	overflow: hidden;
+	border-bottom: 1px solid #444;
+	background: #383028;
+	box-shadow: 0px -15px 40px -15px inset rgba(0, 0, 0, .8);
+}
+
+/*	Make reblogs slightly green */
+.notification-reblog {
+	background: #283828;
+}
+
+/*	Make the first one, and any being hovered over, expand to full size */
+.notification-favourite:focus, .notification-reblog:focus, .notification-favourite:hover, .notification-reblog:hover,
+.item-list article:first-child .notification-favourite,
+.item-list article:first-child .notification-reblog {
+	max-height: 10em;
+}
+
+/*	Shrink font size for fav/boost notifications */
+.notification-favourite *, .notification-reblog * {
+	font-size: 8pt;
+}
+
+/*	Let them be collapsed and remove some extra padding they have */
+.notification-favourite .status, .notification-reblog .status {
+	padding-top: 0;
+	padding-bottom: .25em;
+	min-height: 0;
+}
+
+/*	Add a bit more padding to make up for what we removed */
+.notification-favourite .notification__message, .notification-reblog .notification__message {
+	padding-top: .5em;
+}
+
+/*	Hide the interactions and your name (they're always your posts, so...)
+	This also hides the interactor's avatar, but, oh well
+*/
+.notification-favourite .status__display-name, .notification-reblog .status__display-name, .notification-favourite button, .notification-reblog button, .notification-favourite .status__action-bar, .notification-reblog .status__action-bar {
+	display: none;
+}
+
+/*	Move the relative time (of YOUR post) up so it's visible when collapsed.
+	Bug: Won't show if the user name is too long (gets pushed down)
+	Not a bug: Shows original post time, not interaction time. That's Masto.
+*/
+.notification-favourite .status__relative-time, .notification-reblog .status__relative-time {
+	position: relative;
+	top: -1.7em;
+}
+
